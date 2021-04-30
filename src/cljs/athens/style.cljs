@@ -9,6 +9,7 @@
 (def THEME-DARK
   {:link-color          "#2399E7"
    :highlight-color     "#FBBE63"
+   :text-highlight-color "#FBBE63"
    :warning-color       "#DE3C21"
    :confirmation-color  "#189E36"
    :header-text-color   "#BABABA"
@@ -34,19 +35,17 @@
 (def THEME-LIGHT
   {:link-color          "#0075E1"
    :highlight-color     "#F9A132"
+   :text-highlight-color "#ffdb8a"
    :warning-color       "#D20000"
    :confirmation-color  "#009E23"
    :header-text-color   "#322F38"
    :body-text-color     "#433F38"
    :border-color        "hsla(32, 81%, 10%, 0.08)"
-   :background-plus-2   "#FFFFFF"
-   :background-plus-1   "#FFFFFF"
-   :background-color    "#FFFFFF"
+   :background-plus-2   "#fff"
+   :background-plus-1   "#fbfbfb"
+   :background-color    "#F6F6F6"
    :background-minus-1  "#FAF8F6"
    :background-minus-2  "#EFEDEB"
-
-   :shadow-color  "rgba(0,0,0,0.16)"
-
    :graph-control-bg    "#f9f9f9"
    :graph-control-color "black"
    :graph-node-normal   "#909090"
@@ -57,10 +56,10 @@
 
 
 (def DEPTH-SHADOWS
-  {:4  "0px 1.6px 3.6px rgba(0, 0, 0, 0.13), 0px 0.3px 0.9px rgba(0, 0, 0, 0.1)"
-   :8  "0px 3.2px 7.2px rgba(0, 0, 0, 0.13), 0px 0.6px 1.8px rgba(0, 0, 0, 0.1)"
-   :16 "0px 6.4px 14.4px rgba(0, 0, 0, 0.13), 0px 1.2px 3.6px rgba(0, 0, 0, 0.1)"
-   :64 "0px 24px 60px rgba(0, 0, 0, 0.15), 0px 5px 12px rgba(0, 0, 0, 0.1)"})
+  {:4  "0 2px 4px rgba(0, 0, 0, 0.2)"
+   :8  "0 4px 8px rgba(0, 0, 0, 0.2)"
+   :16 "0 4px 16px rgba(0, 0, 0, 0.2)"
+   :64 "0 24px 60px rgba(0, 0, 0, 0.2)"})
 
 
 (def OPACITIES
@@ -129,6 +128,9 @@
                             :text-transform "uppercase"}]
                       [:.MuiSvgIcon-root {:font-size "1.5rem"}]
                       [:input {:font-family "inherit"}]
+                      [:mark {:background-color (color :text-highlight-color)
+                              :border-radius "0.25rem"
+                              :color "#000"}]
                       [:kbd {:text-transform "uppercase"
                              :font-family    "inherit"
                              :font-size      "0.85em"
@@ -148,6 +150,11 @@
   {:overflow "hidden"
    :height   "100vh"
    :width    "100vw"})
+
+
+(def codemirror-styles
+  {:z-index 10
+   :height  "min-content"})
 
 
 (defn permute-color-opacities
@@ -173,6 +180,7 @@
   (stylefy/init)
   (stylefy/tag "html" base-styles)
   (stylefy/tag "*" {:box-sizing "border-box"})
+  (stylefy/class "CodeMirror" codemirror-styles)
   (let [permute-light (permute-color-opacities THEME-LIGHT)
         permute-dark  (permute-color-opacities THEME-DARK)]
     (stylefy/tag ":root" (merge permute-light
