@@ -5,6 +5,7 @@
     [athens.db :as db]
     [athens.style :refer [color]]
     [athens.subs]
+    [athens.util :refer [get-os]]
     [athens.views.all-pages :refer [table]]
     [athens.views.app-toolbar :refer [app-toolbar]]
     [athens.views.athena :refer [athena-component]]
@@ -139,7 +140,8 @@
 
          :else [:<>
                 (when @modal [filesystem/window])
-                [:div (use-style app-wrapper-style)
+                [:div (use-style app-wrapper-style
+                                 {:class (str "os-" (get-os))})
                  [app-toolbar]
                  [left-sidebar]
                  [:div (use-style main-content-style
