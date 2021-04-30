@@ -409,7 +409,7 @@
   (reg-event-fx
    :minimize
    (fn [_ _]
-   {:minimize! _}))
+   {:minimize! {}}))
 
 
   ;;; Effects
@@ -471,10 +471,10 @@
   (reg-fx
    :fs/write!
    (fn []
-     (debounce-write-db true))))
+     (debounce-write-db true)))
 
 
   (reg-fx
    :minimize!
    (fn []
-     (.minimize ^js/Object @main-window)))
+     (.. remote getCurrentWindow minimize))))
