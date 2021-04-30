@@ -31,10 +31,6 @@
   (def DB-INDEX "index.transit")
   (def IMAGES-DIR-NAME "images")
 
-  (def documents-athens-dir
-    (let [DOC-PATH (.getPath app "documents")]
-      (.resolve path DOC-PATH "athens")))
-
   ;;; Filesystem Dialogs
 
 
@@ -187,11 +183,10 @@
       (.dirname path (:db/filepath db))))
 
 
-  ;; create sub in athens.subs so web-version of Athens works
-  ;;(reg-sub
-  ;;  :db/remote-graph-conf
-  ;;  (fn [db _]
-  ;;    (:db/remote-graph-conf db)))
+  (reg-sub
+    :db/remote-graph-conf
+    (fn [db _]
+      (:db/remote-graph-conf db)))
 
 
   (reg-sub
@@ -215,15 +210,12 @@
     :local-storage/get-db-filepath
     [(inject-cofx :local-storage "db/filepath")
      (inject-cofx :local-storage-map {:ls-key "db/remote-graph-conf"
-                                      :key    :remote-graph-conf})]
+                                      :key :remote-graph-conf})]
     (fn [{:keys [local-storage remote-graph-conf]} _]
-      (let [default-db-path (.resolve path documents-athens-dir DB-INDEX)]
-        (cond
-          (some-> remote-graph-conf read-string :default?) {:dispatch [:start-socket]}
-          ;; No filepath in local storage, but an existing db suggests a dev chromium is running with a different local storage
-          ;; Short-circuit the first load and just use the existing DB
-          (and (nil? local-storage) (.existsSync fs default-db-path)) {:dispatch [:db/update-filepath default-db-path]}
-          :else {:dispatch [:db/update-filepath local-storage]}))))
+      (if (some-> remote-graph-conf read-string
+                  :default?)
+        {:dispatch [:start-socket]}
+        {:dispatch [:db/update-filepath local-storage]})))
 
 
   (reg-event-fx
@@ -231,6 +223,11 @@
     [(inject-cofx :local-storage "current-route/uid")]
     (fn [{:keys [local-storage]} _]
       {:dispatch [:navigate {:page {:id local-storage}}]}))
+
+
+  (def documents-athens-dir
+    (let [DOC-PATH (.getPath app "documents")]
+      (.resolve path DOC-PATH "athens")))
 
 
   (defn create-dir-if-needed!

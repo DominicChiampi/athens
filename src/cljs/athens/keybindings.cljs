@@ -1,4 +1,4 @@
-(ns athens.views.blocks.textarea-keydown
+(ns athens.keybindings
   (:require
     ["@material-ui/icons/DesktopWindows" :default DesktopWindows]
     ["@material-ui/icons/Done" :default Done]
@@ -483,7 +483,7 @@
 
       (= key-code KeyCodes.B) (surround-and-set "**")
 
-      (= key-code KeyCodes.I) (surround-and-set "*")
+      (= key-code KeyCodes.I) (surround-and-set "__")
 
       (= key-code KeyCodes.Y) (surround-and-set "~~")
 

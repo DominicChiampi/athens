@@ -136,14 +136,13 @@
                     [button {:on-click close-modal}
                      [:> Close]]]
 
-         :content  [:div (use-style (merge modal-contents-style))
+         :content  [:div (use-style modal-contents-style)
                     (if (nil? @transformed-roam-db)
                       [:<>
-                       [:input {:style {:flex "0 0 auto"} :type "file" :accept ".edn" :on-change #(file-cb % transformed-roam-db roam-db-filename)}]
+                       [:input {:type "file" :accept ".edn" :on-change #(file-cb % transformed-roam-db roam-db-filename)}]
                        [:div {:style {:position       "relative"
                                       :padding-bottom "56.25%"
-                                      :margin         "1em 0 0"
-                                      :flex "1 1 100%"
+                                      :margin         "20px 0"
                                       :width          "100%"}}
                         [:iframe {:src                   "https://www.loom.com/embed/787ed48da52c4149b031efb8e17c0939"
                                   :frameBorder           "0"
@@ -215,7 +214,6 @@
                   :width           "100%"}}
     [:h5 "New Location"]
     [button {:primary  true
-             :disabled (clojure.string/blank? (:input @state))
              :on-click #(electron/create-dialog! (:input @state))}
      "Browse"]]])
 
@@ -263,6 +261,7 @@
         remote-graph-conf (subscribe [:db/remote-graph-conf])
         db-filepath       (subscribe [:db/filepath])
         state             (r/atom {:input     ""
+                                   :remote?   (:default? @remote-graph-conf)
                                    :tab-value 0})]
     (fn []
       (js/ReactDOM.createPortal

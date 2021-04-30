@@ -1,4 +1,4 @@
-(ns athens.views.pages.settings
+(ns athens.views.settings-page
   (:require
     ["@material-ui/icons/Check" :default Check]
     ["@material-ui/icons/NotInterested" :default NotInterested]
@@ -282,7 +282,7 @@
         [:p "For now, a username is only needed if you are connected to a server."]]]]]))
 
 
-(defn page
+(defn settings-page
   []
   (let [s (r/atom (init-state))]
     [settings-container

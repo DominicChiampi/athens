@@ -1,9 +1,9 @@
 (ns athens.devcards.node-page
   (:require
-    [athens.views.pages.node-page :as node-page]
+    [athens.views.node-page :refer [node-page-component]]
     [devcards.core :refer-macros [defcard-rg]]))
 
 
 (defcard-rg Node-Page
   "pull entity 4093: \"Hyperlink\" page"
-  [node-page/page 4093])
+  [node-page-component 4093])
