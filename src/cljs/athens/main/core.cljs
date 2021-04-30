@@ -32,6 +32,8 @@
                         (clj->js {:width 800
                                   :height 600
                                   :autoHideMenuBar true
+                                  :frame false
+:titleBarStyle "hiddenInset"
                                   :enableRemoteModule true
                                   :webPreferences {:nodeIntegration true
                                                    :worldSafeExecuteJavaScript true
