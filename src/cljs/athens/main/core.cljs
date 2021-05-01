@@ -1,7 +1,8 @@
 (ns athens.main.core
   (:require
-    ["electron" :refer [app BrowserWindow ipcMain shell]]
-    ["electron-updater" :refer [autoUpdater]]))
+   ["electron" :refer [app BrowserWindow ipcMain shell]]
+   ["electron-updater" :refer [autoUpdater]]
+   ["path" :as path]))
 
 
 (def log (js/require "electron-log"))
@@ -29,16 +30,17 @@
 (defn init-browser
   []
   (reset! main-window (BrowserWindow.
-                        (clj->js {:width 800
-                                  :height 600
-                                  :autoHideMenuBar true
-                                  :frame false
-:titleBarStyle "hiddenInset"
-                                  :enableRemoteModule true
-                                  :webPreferences {:nodeIntegration true
-                                                   :worldSafeExecuteJavaScript true
-                                                   :enableRemoteModule true
-                                                   :nodeIntegrationWorker true}})))
+                       (clj->js {:width 800
+                                 :height 600
+                                 :autoHideMenuBar true
+                                 :frame false
+                                 :titleBarStyle "hiddenInset"
+                                 :enableRemoteModule true
+                                 :webPreferences {:nodeIntegration true
+                                                  :worldSafeExecuteJavaScript true
+                                                  :enableRemoteModule true
+                                                  :nodeIntegrationWorker true
+                                                  :preload (path/join js/__dirname "js/preload.js")}})))
   ; Path is relative to the compiled js file (main.js in our case)
   (.loadURL ^js @main-window (str "file://" js/__dirname "/public/index.html"))
   (.on ^js @main-window "closed" #(reset! main-window nil))
