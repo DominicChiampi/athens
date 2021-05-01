@@ -33,7 +33,7 @@
                                   :height 600
                                   :autoHideMenuBar true
                                   :frame false
-:titleBarStyle "hiddenInset"
+                                  :titleBarStyle "hiddenInset"
                                   :enableRemoteModule true
                                   :webPreferences {:nodeIntegration true
                                                    :worldSafeExecuteJavaScript true
