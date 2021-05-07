@@ -1,10 +1,13 @@
 (ns athens.main.core
   (:require
-    ["electron" :refer [app BrowserWindow ipcMain shell]]
-    ["electron-updater" :refer [autoUpdater]]))
+   [athens.config :as config]
+
+   ["electron" :refer [app BrowserWindow ipcMain shell protocol]]
+   ["electron-updater" :refer [autoUpdater]]))
 
 
 (def log (js/require "electron-log"))
+(def path (js/require "path"))
 
 (set! (.. autoUpdater -logger) log)
 (set! (.. autoUpdater -logger -transports -file -level) "info")
@@ -29,16 +32,16 @@
 (defn init-browser
   []
   (reset! main-window (BrowserWindow.
-                        (clj->js {:width 800
-                                  :height 600
-                                  :backgroundColor "#1A1A1A"
-                                  :autoHideMenuBar true
-                                  :enableRemoteModule true
-                                  :webPreferences {:contextIsolation false
-                                                   :nodeIntegration true
-                                                   :worldSafeExecuteJavaScript true
-                                                   :enableRemoteModule true
-                                                   :nodeIntegrationWorker true}})))
+                       (clj->js {:width 800
+                                 :height 600
+                                 :backgroundColor "#1A1A1A"
+                                 :autoHideMenuBar true
+                                 :enableRemoteModule true
+                                 :webPreferences {:contextIsolation false
+                                                  :nodeIntegration true
+                                                  :worldSafeExecuteJavaScript true
+                                                  :enableRemoteModule true
+                                                  :nodeIntegrationWorker true}})))
   ; Path is relative to the compiled js file (main.js in our case)
   (.loadURL ^js @main-window (str "file://" js/__dirname "/public/index.html"))
   (.on ^js @main-window "closed" #(reset! main-window nil))
@@ -91,6 +94,9 @@
        (fn [_ _]
          (.. autoUpdater downloadUpdate))))
 
+(defn init-athens-protocol
+  []
+  (js/console.log (.registerHttpProtocol protocol "athens1" (fn [req cb] (js/alert req)))))
 
 (defn main
   []
@@ -102,5 +108,6 @@
   (.on app "ready" (fn []
                      (init-ipcMain)
                      (init-browser)
+                     (init-athens-protocol)
                      (init-updater)
                      (.. autoUpdater checkForUpdates))))

@@ -49,7 +49,15 @@
     },
     "publish": {
       "provider": "github"
-    }
+    },
+    "protocols": [
+      {
+        "name": "athens1",
+        "schemes": [
+          "athens1"
+        ]
+      }
+    ]
   },
   "dependencies": {
     "@js-joda/core": "1.12.0",
