@@ -17,8 +17,8 @@ services:
     depends_on:
       fluree:
         condition: service_healthy
-    ports:
-      - 3010:3010 # Change this according to CONFIG_EDN.
+    # ports:
+    #   - 3010:3010 # Change this according to CONFIG_EDN.
     volumes:
       - ./athens-data/logs:/srv/athens/logs
     environment:
@@ -31,28 +31,40 @@ services:
       timeout: 60s
       retries: 10
       start_period: 15s
+    networks:
+      - athens
 
 
   nginx:
-    image: ghcr.io/athensresearch/nginx:latest
-    # build:
-    #  context: .
-    #  dockerfile: nginx.dockerfile
+    # image: ghcr.io/athensresearch/nginx:latest
+    build:
+      context: .
+      dockerfile: nginx.dockerfile
     restart: always
     depends_on:
       athens:
         condition: service_healthy
     restart: always
-    ports:
-      - 80:80
+    # ports:
+    #   - 80:80
+    networks:
+      - traefik
+      - athens
+    labels:
+      traefik.enable: "true"
+      traefik.http.routers.athens.tls: "true"
+      traefik.http.routers.athens.tls.certresolver: letsencrypt
+      traefik.http.routers.athens.rule: Host(`athens.${DOMAIN}`)
+      traefik.http.routers.athens.middlewares: oauth
+
 
   fluree:
     # Under default settings maximum recommended event size is 2mb.
     # Can be increased via fdb-memory-reindex-max to up to 10mb.
     image: fluree/ledger:1.0.0-beta17
     restart: always
-    ports:
-      - 8090:8090
+    # ports:
+    #   - 8090:8090
     volumes:
       - ./athens-data/fluree:/var/lib/fluree
     healthcheck:
@@ -65,3 +77,10 @@ services:
       timeout: 30s
       retries: 3
       start_period: 15s
+    networks:
+      - athens
+
+networks:
+  athens:
+  traefik:
+    external: true
